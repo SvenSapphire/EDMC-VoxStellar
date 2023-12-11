@@ -82,5 +82,5 @@ class VoxStellar:
                     Debug.logger.error(f"Error sending data: {e}")
                 finally:
                     self.queue.task_done()
-                    
+
             sleep(TIME_WORKER_PERIOD_S)

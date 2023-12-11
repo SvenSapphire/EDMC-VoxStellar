@@ -15,6 +15,7 @@ class ApplicationSender:
     def send(self, cmdr, payload):
         url = Config(self.voxstellar).api('voxstellar')['url']
         key = Config(self.voxstellar).api('voxstellar')['key']
+        version = Config(self.voxstellar).api('voxstellar')['version']
 
         json_data = json.dumps({
             'commander': cmdr,
@@ -26,7 +27,10 @@ class ApplicationSender:
         headers = {
             'Content-Type': 'application/json',
             'Signature': f'{signature_hex}',
-            'Connection': 'close'
+            'Connection': 'close',
+            'User-Agent': f'EDMC-VoxStellar/{version}',
+            'Accept': '*/*',
+            'Accept-Encoding': 'gzip, deflate, br',
         }
 
         start_time = time.time()
