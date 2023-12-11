@@ -4,6 +4,7 @@ from time import sleep
 from voxstellar.application_sender import ApplicationSender
 from voxstellar.debug import Debug
 from voxstellar.config import Config
+from queue import Queue
 from config import appversion, config
 
 TIME_WORKER_PERIOD_S = 60
@@ -21,6 +22,7 @@ class VoxStellar:
         :param plugin_name: The name of the plugin.
         """
         self.plugin_name: str = plugin_name
+        self.queue = Queue()
 
     def plugin_start(self, plugin_dir: str):
         """
@@ -59,7 +61,7 @@ class VoxStellar:
         # self.application_sender.send(cmdrname, entry)
 
         if entry['event'] == 'Scan' or entry['event'] == 'FSDJump' or entry['event'] == 'FSSDiscoveryScan' or entry['event'] == 'SAASignalsFound' or entry['event'] == 'ScanOrganic':
-            self.application_sender.send(cmdrname, entry)
+            self.queue.put((cmdrname, entry))
 
     def _worker(self) -> None:
         """
@@ -72,4 +74,13 @@ class VoxStellar:
                 Debug.logger.debug("Shutting down VoxStellar Worker...")
                 return
 
+            if not self.queue.empty():
+                cmdrname, entry = self.queue.get()
+                try:
+                    self.application_sender.send(cmdrname, entry)
+                except Exception as e:
+                    Debug.logger.error(f"Error sending data: {e}")
+                finally:
+                    self.queue.task_done()
+                    
             sleep(TIME_WORKER_PERIOD_S)
