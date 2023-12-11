@@ -25,10 +25,15 @@ class ApplicationSender:
         signature_hex = signature.hexdigest()
         headers = {
             'Content-Type': 'application/json',
-            'Signature': f'{signature_hex}'
+            'Signature': f'{signature_hex}',
+            'Connection': 'close'
         }
 
+        start_time = time.time()
         response = requests.post(url, data=json_data, headers=headers)
+        end_time = time.time()
+
+        Debug.logger.debug(f"Sending data took {end_time - start_time} seconds.")
 
         if response.status_code == 200:
             Debug.logger.debug("Webhook sent successfully.")
