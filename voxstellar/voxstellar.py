@@ -7,7 +7,7 @@ from voxstellar.config import Config
 from queue import Queue
 from config import appversion, config
 
-TIME_WORKER_PERIOD_S = 60
+TIME_WORKER_PERIOD_S = 2
 
 
 class VoxStellar:

@@ -33,6 +33,8 @@ class ApplicationSender:
             'Accept-Encoding': 'gzip, deflate, br',
         }
 
+        Debug.logger.debug(f"Sending data to {url}...")
+
         start_time = time.time()
         response = requests.post(url, data=json_data, headers=headers)
         end_time = time.time()
