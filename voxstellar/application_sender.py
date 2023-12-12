@@ -34,7 +34,7 @@ class ApplicationSender:
         signature = hmac.new(key.encode('utf-8'), json_data.encode('utf-8'), hashlib.sha256).hexdigest()
         headers = {
             'Content-Type': 'application/json',
-            'Signature': f'{signature_hex}',
+            'Signature': f'{signature}',
             'Connection': 'close',
             'User-Agent': f'EDMC-VoxStellar/{version}',
             'Accept': '*/*',
@@ -42,7 +42,6 @@ class ApplicationSender:
         }
 
         self.logger.debug("-------------------------------- START REQUEST --------------------------------")
-            
         response = requests.post(url, data=json_data, headers=headers)
 
         self.logger.debug("-------------------------------- RESOURCES USED --------------------------------")
