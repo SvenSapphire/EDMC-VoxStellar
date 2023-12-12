@@ -6,10 +6,22 @@ import hashlib
 import hmac
 from voxstellar.config import Config
 
+
 class ApplicationSender:
     def __init__(self, voxstellar):
         self.voxstellar = voxstellar
 
+        requests.packages.urllib3.util.connection.HAS_IPV6 = False
+
+        self.requests_log = logging.getLogger("urllib3")
+        self.requests_log.setLevel(logging.DEBUG)
+        fh = logging.FileHandler('requests.log')
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        fh.setFormatter(formatter)
+        self.requests_log.addHandler(fh)
+        self.requests_log.propagate = False
+
+        ## normal logger -------------------------------------------------------------------------------
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.DEBUG)
 
