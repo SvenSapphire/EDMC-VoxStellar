@@ -38,14 +38,16 @@ class ApplicationSender:
 
         }
 
+        self.logger.debug("-------------------------------- START REQUEST --------------------------------")
         response = requests.post(url, data=json_data, headers=headers)
 
+        self.logger.debug("-------------------------------- RESOURCES USED --------------------------------")
         request = response.request
         self.logger.debug(f"Request URL: {request.url}")
         self.logger.debug(f"Request Method: {request.method}")
         self.logger.debug(f"Request Headers: {request.headers}")
         self.logger.debug(f"Request Body: {request.body}")
-        self.logger.debug("-------------------------------- END OF REQUEST --------------------------------")
+        self.logger.debug("-------------------------------- END REQUEST SECTION --------------------------------")
 
         if response.status_code == 200:
             self.logger.debug("Webhook sent successfully.")
@@ -59,3 +61,4 @@ class ApplicationSender:
         self.logger.debug(f"Response status code: {response.status_code}")
         self.logger.debug(f"Response elapsed time: {response.elapsed}")
         self.logger.debug(f"Response encoding: {response.encoding}")
+        self.logger.debug("-------------------------------- END RESPONSE SECTION --------------------------------")
