@@ -15,13 +15,14 @@ class VoxStellar:
     The main class for the plugin.
     """
 
-    def __init__(self, plugin_name: str):
+    def __init__(self, plugin_name: str, logger):
         """
         Initialize the plugin.
 
         :param plugin_name: The name of the plugin.
         """
         self.plugin_name: str = plugin_name
+        self.logger = logger
         self.queue = Queue()
 
     def plugin_start(self, plugin_dir: str):
@@ -63,23 +64,23 @@ class VoxStellar:
         if entry['event'] == 'Scan' or entry['event'] == 'FSDTarget' or entry['event'] == 'FSDJump' or entry['event'] == 'FSSDiscoveryScan' or entry['event'] == 'SAASignalsFound' or entry['event'] == 'ScanOrganic' or entry['event'] == 'ScanBaryCentre' or entry['event'] == 'CodexEntry':
             self.queue.put((cmdrname, entry))
 
-    def _worker(self) -> None:
+    def _worker(self, logger) -> None:
         """
         Handle thread work
         """
-        Debug.logger.debug("Starting VoxStellar Worker...")
+        logger.debug("Starting VoxStellar Worker...")
 
         while True:
             if config.shutting_down:
-                Debug.logger.debug("Shutting down VoxStellar Worker...")
+                self.logger.debug("Shutting down VoxStellar Worker...")
                 return
 
             if not self.queue.empty():
                 cmdrname, entry = self.queue.get()
                 try:
-                    self.application_sender.send(cmdrname, entry)
+                    self.application_sender.send(cmdrname, entry, self.logger)
                 except Exception as e:
-                    Debug.logger.error(f"Error sending data: {e}")
+                    self.logger.error(f"Error sending data: {e}")
                 finally:
                     self.queue.task_done()
 
