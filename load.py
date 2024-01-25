@@ -6,11 +6,12 @@ import logging
 import os
 
 from voxstellar.voxstellar import VoxStellar
-from voxstellar.debug import Debug
+from config import appname
 
-PLUGIN_NAME = "EDMC-VoxStellar"
+PLUGIN_NAME = os.path.basename(os.path.dirname(__file__))
+logger = logging.getLogger(f'{appname}.{PLUGIN_NAME}')
 
-this: VoxStellar = VoxStellar(PLUGIN_NAME)
+this: VoxStellar = VoxStellar(PLUGIN_NAME, logger)
 
 
 def plugin_start3(plugin_dir: str) -> str:
