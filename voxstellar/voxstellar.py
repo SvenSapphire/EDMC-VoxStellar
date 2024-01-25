@@ -2,7 +2,6 @@ from threading import Thread
 from time import sleep
 
 from voxstellar.application_sender import ApplicationSender
-from voxstellar.debug import Debug
 from voxstellar.config import Config
 from queue import Queue
 from config import appversion, config
@@ -31,7 +30,6 @@ class VoxStellar:
         """
         self.plugin_dir = plugin_dir
 
-        self.debug: Debug = Debug(self)
         self.config: Config = Config(self)
         self.application_sender: ApplicationSender = ApplicationSender(self)
 
