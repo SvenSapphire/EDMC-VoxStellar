@@ -60,7 +60,10 @@ class VoxStellar:
         # Testing purposes
         # self.application_sender.send(cmdrname, entry)
 
-        if entry['event'] == 'Scan' or entry['event'] == 'FSDTarget' or entry['event'] == 'FSDJump' or entry['event'] == 'FSSDiscoveryScan' or entry['event'] == 'SAASignalsFound' or entry['event'] == 'ScanOrganic' or entry['event'] == 'ScanBaryCentre' or entry['event'] == 'CodexEntry':
+        allowed_events = ['Scan', 'FSDTarget', 'FSDJump', 'FSSDiscoveryScan', 'SAASignalsFound', 'ScanOrganic',
+                          'ScanBaryCentre', 'CodexEntry']
+
+        if entry['event'] in allowed_events:
             self.queue.put((cmdrname, entry))
 
     def _worker(self) -> None:
