@@ -1,0 +1,44 @@
+name: Create release
+
+on:
+  release:
+    types:
+      - created
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Copy config
+      run: cp "./config/config.template.ini" "./config/config.ini"
+
+    - name: Inject Secrets
+      run: sed -i "s/\$KEY/${{secrets.WEBHOOK_KEY}}/g" "./config/config.ini"
+
+    - name: Inject Version
+      run: sed -i "s/\$VERSION/${{github.event.release.tag_name}}/g" "./config/config.ini"
+
+    - name: Prepare files for zipping
+      run: |
+        mkdir temp-folder
+        find . -maxdepth 1 ! -name 'temp-folder' ! -name '.git' ! -name '.github' ! -name '.gitignore' ! -name '.' -exec mv {} temp-folder \;
+        mv temp-folder ${{ github.event.repository.name }}-${{ github.event.release.tag_name }}
+      shell: /usr/bin/bash -e {0}
+
+
+    - name: Zip Folder
+      run: zip -r ${{ github.event.repository.name }}-${{ github.event.release.tag_name }}.zip "${{ github.event.repository.name }}-${{ github.event.release.tag_name }}"
+
+    - name: Cleanup
+      run: rm -rf "${{ github.event.repository.name }}-${{ github.event.release.tag_name }}"
+
+    - name: Upload Release Asset
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: ${{ github.event.repository.name }}-${{ github.event.release.tag_name }}.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN_EDMC_VOXSTELLAR }}
