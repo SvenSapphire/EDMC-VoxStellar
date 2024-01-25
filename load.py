@@ -8,7 +8,7 @@ import os
 from voxstellar.voxstellar import VoxStellar
 from voxstellar.debug import Debug
 
-PLUGIN_NAME = "EDMC-VoxStellar"
+PLUGIN_NAME = os.path.basename(os.path.dirname(__file__))
 
 this: VoxStellar = VoxStellar(PLUGIN_NAME)
 
