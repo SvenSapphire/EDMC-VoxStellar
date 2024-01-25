@@ -65,11 +65,11 @@ class VoxStellar:
         if entry['event'] in allowed_events:
             self.queue.put((cmdrname, entry))
 
-    def _worker(self, logger) -> None:
+    def _worker(self) -> None:
         """
         Handle thread work
         """
-        logger.debug("Starting VoxStellar Worker...")
+        self.logger.debug("Starting VoxStellar Worker...")
 
         while True:
             if config.shutting_down:
